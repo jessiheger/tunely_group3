@@ -1,9 +1,10 @@
 // SERVER-SIDE JAVASCRIPT
 
-//require express in our app
-var express = require('express');
-// generate a new express app and call it 'app'
-var app = express();
+var express     = require('express');
+var app         = express();
+var bodyParser  = require('body-parser');
+var mongoose    = require('mongoose');
+var db          = require('./models');
 
 // set EJS as our view engine. This allows us to make dynamic pages.
 app.set('view engine', 'ejs');
@@ -25,48 +26,51 @@ First get your routes hooked up and the ejS looking the way you want. When you a
 ready to proceed with hooking up the database, go to ./models/album to create a schema.
 Then, take a look into the seed.js file to populate some starter data.
 */
-var albums = [{
-  _id: 132,
-  artistName: 'Nine Inch Nails',
-  name: 'The Downward Spiral',
-  releaseDate: '1994, March 8',
-  genres: [ 'industrial', 'industrial metal' ]
-},
-{
-  _id: 133,
-  artistName: 'Metallica',
-  name: 'Metallica',
-  releaseDate: '1991, August 12',
-  genres: [ 'heavy metal' ]
-},
-{
-  _id: 134,
-  artistName: 'The Prodigy',
-  name: 'Music for the Jilted Generation',
-  releaseDate: '1994, July 4',
-  genres: [ 'electronica', 'breakbeat hardcore', 'rave', 'jungle' ]
-},
-{
-  _id: 135,
-  artistName: 'Johnny Cash',
-  name: 'Unchained',
-  releaseDate: '1996, November 5',
-  genres: [ 'country', 'rock' ]
-}];
 
 
 /**********
  * ROUTES *
  **********/
 
-/*
- * HTML Endpoints: This means we are expecting an HTML or EJS page to be rendered
- */
 
 app.get('/', function homepage (req, res) {
-  // This albums variable is the array of objects defined above.
-  // TODO: Eventually, this should be replaced with a find() call to your database!
-  res.render('index', { albums: albums });
+  db.Album.find(function (err, albums) {
+    if (err){
+      console.log("****************ERROR*******************", err);
+    } else {
+    res.render('index', { albums: albums });
+    }
+  })
+});
+
+app.get('/albums/:id', function homepage (req, res) {
+  db.Album.findById(req.params.id, function (err, album) {
+    if (err){
+      console.log("****************ERROR*******************", err);
+    } else {
+    res.json(album);
+    }
+  })
+});
+
+app.get('/api/albums', function (req, res) {
+  db.Album.find(function (err, albums) {
+    if (err){
+      console.log("****************ERROR*******************", err);
+    } else {
+    res.json(albums);
+    }
+  })
+});
+
+app.get('/api/albums/:id', function (req, res) {
+  db.Album.find(function (err, albums) {
+    if (err){
+      console.log("****************ERROR*******************", err);
+    } else {
+    res.json(albums[req.params.id-1]);
+    }
+  })
 });
 
 // TODO: GET ROUTE for single album (Route has an id in the url. e.g., /:id that can be accessed
@@ -89,4 +93,6 @@ app.get('/', function homepage (req, res) {
  **********/
 
 // listen on port 3000
-app.listen(process.env.PORT || 3000);
+app.listen(process.env.PORT || 3000, function () {
+  console.log('Listening...');
+});
