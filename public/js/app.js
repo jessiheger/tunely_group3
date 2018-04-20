@@ -14,7 +14,25 @@
 $(document).ready(function() {
   console.log('app.js loaded!');
 
-
+    $('#newAlbum').on('submit', function(e) {
+        e.preventDefault();
+        $.ajax({
+          method: 'POST',
+          url: '/api/albums',
+          data: $(this).serialize(),
+          success: newAlbumSuccess,
+          error: newAlbumError
+        });
+     });
 });
 
+function newAlbumSuccess(json) {
+    console.log(json);
+    $('#newAlbum input').val('');
+
+}
+
+function newAlbumError(){
+    console.log("POST error");
+};
 

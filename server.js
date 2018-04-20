@@ -12,6 +12,8 @@ app.set('view engine', 'ejs');
 // serve static files from public folder
 app.use(express.static(__dirname + '/public'));
 
+app.use(bodyParser.urlencoded({ extended: true }));
+
 /************
  * DATABASE *
  ************/
@@ -72,6 +74,21 @@ app.get('/api/albums/:id', function (req, res) {
     }
   })
 });
+
+app.post('/api/albums', function (req, res) {
+  // let genres = req.body.genres.replace(/,\s|\sand\s/g, " ").split(" ")
+  let genres = req.body.genres;
+  console.log(req.body);
+ let newAlbum = db.Album({
+    artistName: req.body.artistName, 
+    name: req.body.name, 
+    releaseDate: req.body.releaseDate, 
+    genres: genres});
+  newAlbum.save();
+   res.json(newAlbum);
+});
+
+
 
 // TODO: GET ROUTE for single album (Route has an id in the url. e.g., /:id that can be accessed
 // on the request object with req.params.id).
