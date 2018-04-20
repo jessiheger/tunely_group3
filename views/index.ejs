@@ -1,5 +1,16 @@
 <% include partials/header %>
-
+<div>
+<form id= "newAlbum">
+  <label for ="Album Name">Album Name</label>
+  <input type ="text" name="albumname" placeholder="Album Name">
+  <label for ="Artist Name">Artist Name</label>
+  <input type ="text" name="artistname" placeholder="Artist Name">
+  <label for ="Release Date">Release Date</label>
+  <input type ="text" name="releasedate" placeholder="Release Date">
+  <label for ="Genres">Genres</label>
+  <input type ="text" name="genres" placeholder="Genres">
+</div>
+<button type="submit" class="btn btn-primary">Add Album</button>
 <!-- albums! -->
 <div id='albums'>
   <% albums.forEach(function(album) { %>
