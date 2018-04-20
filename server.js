@@ -40,11 +40,26 @@ app.get('/', function homepage (req, res) {
     if (err){
       console.log("****************ERROR*******************", err);
     } else {
-    res.render('index', { albums: albums });
+    res.render('index');
+    // res.json(albums);
     }
   })
 });
 
+// getting all albums
+app.get('/api/albums', function (req, res) {
+  db.Album.find(function (err, albums) {
+    // console.log('app.get(/gaefeaihg;ioehs')
+    if (err){
+      console.log("****************ERROR*******************", err);
+    } else {
+    // console.log(albums);
+    res.json(albums);
+    }
+  })
+});
+
+//getting one album by mongo ID
 app.get('/albums/:id', function homepage (req, res) {
   db.Album.findById(req.params.id, function (err, album) {
     if (err){
@@ -55,16 +70,7 @@ app.get('/albums/:id', function homepage (req, res) {
   })
 });
 
-app.get('/api/albums', function (req, res) {
-  db.Album.find(function (err, albums) {
-    if (err){
-      console.log("****************ERROR*******************", err);
-    } else {
-    res.json(albums);
-    }
-  })
-});
-
+// getting one album by id
 app.get('/api/albums/:id', function (req, res) {
   db.Album.find(function (err, albums) {
     if (err){
@@ -75,16 +81,15 @@ app.get('/api/albums/:id', function (req, res) {
   })
 });
 
+// adding a new album
 app.post('/api/albums', function (req, res) {
   // let genres = req.body.genres.replace(/,\s|\sand\s/g, " ").split(" ")
-  let genres = req.body.genres;
+  let style = req.body.genres;
+  let genresArr = style.split(",")
   console.log(req.body);
- let newAlbum = db.Album({
-    artistName: req.body.artistName, 
-    name: req.body.name, 
-    releaseDate: req.body.releaseDate, 
-    genres: genres});
+  let newAlbum = new db.Album({ name: req.body.albumName, artistName: req.body.artistName, releaseDate: req.body.releaseDate, genres: genresArr});
   newAlbum.save();
+  // console.log(newAlbum);
    res.json(newAlbum);
 });
 
